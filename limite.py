@@ -6,7 +6,7 @@ def verifica_limite(funcao, ponto_a, limite_L, epsilon):
     # Simplifica a expressão para lidar com indeterminações
     funcao_simplificada = sp.simplify(funcao)
     
-    # Calcula o limite da função simplificada para ver se a indeterminação é resolvida
+    # Calcula o limite da função simplificada
     limite_calculado = sp.limit(funcao_simplificada, x, ponto_a)
     
     # Verifica se o limite calculado é um número real
@@ -19,55 +19,63 @@ def verifica_limite(funcao, ponto_a, limite_L, epsilon):
     else:
         return False, False  # Limite não existe ou não é finito
 
-# Etapa de Entrada de Dados e Execução
 def result():
     print("### Verificação de Limite usando Definição Formal ###")
-    print("Formato de entrada da função f(x):")
-    print(" - Use operadores como +, -, *, /, ** (para potenciação), e sqrt(x) para raiz quadrada.")
-    print(" - Exemplos de funções:")
+    print("\nFormato de entrada da função f(x):")
+    print(" - Use operadores matemáticos como: +, -, *, /, ** (potência), sqrt(x) (raiz quadrada).")
+    print(" - Use funções trigonométricas como: sin(x) (seno), cos(x) (cosseno), tan(x) (tangente).")
+    print(" - Exemplos de funções válidas:")
     print("   1. x**2 - 3*x + 1")
     print("   2. sqrt(x**2 + 1)")
     print("   3. 1/(x - 1)")
-    print("   4. x**3 - 4*x + 4")
+    print("   4. sin(x)/x")
+    print("   5. cos(x) - 1")
+    print("   6. tan(x)/x\n")
 
-    # Solicita ao usuário os dados
-    expressao = input("Digite a função f(x): ")
-    ponto_a = float(input("Digite o ponto a que x tende: "))
-    epsilon = float(input("Digite o valor de epsilon (ex: 0.001): "))
+    try:
+        # Solicita ao usuário os dados
+        expressao = input("Digite a função f(x): ")
+        ponto_a = float(input("Digite o ponto 'a' que x tende (ex: 0, 1, -1, π/2): "))
+        epsilon = float(input("Digite o valor de epsilon (ex: 0.001): "))
 
-    # Converte a expressão para uma função simbólica
-    x = sp.symbols('x')
-    funcao = sp.sympify(expressao)  # Converte a entrada de string para expressão simbólica
+        if epsilon <= 0:
+            print("Erro: Epsilon deve ser um valor positivo.")
+            return
 
-    # Calcula o valor esperado do limite substituindo o ponto_a na função
-    limite_L = sp.limit(funcao, x, ponto_a)
+        # Converte a expressão para uma função simbólica
+        x = sp.symbols('x')
+        funcao = sp.sympify(expressao)  # Converte string para expressão simbólica
 
-    # Calcula e testa o limite
-    resultado, limite_existe = verifica_limite(funcao, ponto_a, limite_L, epsilon)
+        # Calcula o valor esperado do limite
+        limite_L = sp.limit(funcao, x, ponto_a)
 
-    # Exemplo Prático
-    print("\n### Exemplo Prático ###")
-    print(f"Função f(x) = {funcao}")
-    print(f"Função simplificada = {sp.simplify(funcao)}")
-    print(f"Ponto de aproximação a = {ponto_a}")
-    print(f"Valor esperado do limite L = {limite_L}")
-    print(f"Valor de epsilon = {epsilon}")
-    if limite_existe:
-        print("Resultado da verificação:", "O limite existe e é igual a L" if resultado else "O limite existe, mas não é igual a L")
-    else:
-        print("O limite não existe.")
+        # Calcula e testa o limite
+        resultado, limite_existe = verifica_limite(funcao, ponto_a, limite_L, epsilon)
 
-    # Conclusão
-    print("\n### Conclusão ###")
-    if limite_existe:
-        if resultado:
-            print(f"O limite de f(x) quando x tende a {ponto_a} é igual a {limite_L}, de acordo com a definição formal e com o valor de epsilon = {epsilon}.")
+        # Exibição dos resultados
+        print("\n### Exemplo Prático ###")
+        print(f"Função f(x) = {funcao}")
+        print(f"Função simplificada = {sp.simplify(funcao)}")
+        print(f"Ponto de aproximação a = {ponto_a}")
+        print(f"Valor esperado do limite L = {limite_L.evalf()}")
+        print(f"Valor de epsilon = {epsilon}")
+
+        if limite_existe:
+            print("Resultado da verificação:", 
+                  "O limite existe e é igual a L" if resultado else "O limite existe, mas não é igual a L")
         else:
-            print(f"O limite de f(x) quando x tende a {ponto_a} existe, mas não é igual ao valor esperado de L = {limite_L}.")
-    else:
-        print(f"O limite de f(x) quando x tende a {ponto_a} não existe de acordo com a definição formal.")
+            print("O limite não existe.")
 
-    print("\nEste código verifica a existência e a igualdade do limite, permitindo checar se a função se aproxima corretamente de L conforme x se aproxima de a.")
+        print("\n### Conclusão ###")
+        if limite_existe:
+            if resultado:
+                print(f"O limite de f(x) quando x tende a {ponto_a} é {limite_L}, dentro da tolerância epsilon = {epsilon}.")
+            else:
+                print(f"O limite de f(x) existe, mas difere do valor esperado L = {limite_L}.")
+        else:
+            print(f"O limite de f(x) quando x tende a {ponto_a} não existe.")
+
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
 
 # Chamada do programa principal
-
