@@ -1,31 +1,26 @@
-import limite
-
-def main():
-    while True:
-        print("\n=== Menu de Cálculos ===")
-        print("1 - Limites")
-        print("2 - Derivadas")
-        print("3 - Integrais")
-        print("0 - Sair")
-
-        opcao = input("Escolha uma opção: ")
-
-        if opcao == '1':
-            print("Você selecionou a opção para calcular Limites.")
-            limite.result()
-            # Aqui você pode chamar a função de cálculo de limites
-        elif opcao == '2':
-            print("Você selecionou a opção para calcular Derivadas.")
-            # Aqui você pode chamar a função de cálculo de derivadas
-        elif opcao == '3':
-            print("Você selecionou a opção para calcular Integrais.")
-            # Aqui você pode chamar a função de cálculo de integrais
-        elif opcao == '0':
-            print("Saindo do programa...")
-            break
-        else:
-            print("Opção inválida! Por favor, escolha uma opção válida.")
-
-# Chamando a função para exibir o menu
 if __name__ == "__main__":
-    main()
+    import math
+
+    # Função f(x) a ser testada
+    f = lambda x: 2 * x + 3  # Exemplo de função linear
+
+    # Parâmetros
+    c = 2  # Ponto em que o limite está sendo avaliado
+    L = 7  # Valor do limite esperado
+    epsilon = 0.01
+    delta = 0.01
+
+    # Geração de valores de x manualmente
+    x_valores = [c - delta + i * 0.0001 for i in range(int(2 * delta / 0.0001))]
+    x_valores = [x for x in x_valores if x != c]  # Remove o ponto c
+
+    # Verificação da definição formal
+    limite_valido = True
+
+    for x in x_valores:
+        if not (0 < abs(x - c) < delta and abs(f(x) - L) < epsilon):
+            limite_valido = False
+            break
+
+    # Resultado
+    print(f"Para ε = {epsilon} e δ = {delta}, a definição é : {'satisfeita' if limite_valido else 'não satisfeita'}.")
