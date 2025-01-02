@@ -1,26 +1,51 @@
+import sympy as sp
+
+def verify_limit(function, a, L, epsilon=1e-5, delta=1e-5):
+    """
+    Verifica se o limite de uma função é igual a L quando x tende a a, utilizando a definição formal de limite.
+
+    :param function: Função simbólica f(x)
+    :param a: Ponto ao qual x tende
+    :param L: Valor esperado do limite
+    :param epsilon: Valor de tolerância para |f(x) - L|
+    :param delta: Intervalo para testar valores próximos de a
+    :return: True se o limite atender à definição formal, False caso contrário
+    """
+    x = sp.symbols('x')
+
+    # Geração de valores ao redor de a
+    test_points = [a + i * delta for i in range(-10, 11) if i != 0]  # Evitar x = a
+
+    for point in test_points:
+        try:
+            # Avalia a função no ponto
+            value = function.subs(x, point)
+            
+            # Verifica a condição |f(x) - L| < epsilon
+            if abs(value - L) >= epsilon:
+                return False
+        except:
+            # Caso a função seja indefinida no ponto, falha no teste
+            return False
+
+    return True
+
+# Exemplo de uso
 if __name__ == "__main__":
-    import math
+    x = sp.symbols('x')
 
-    # Função f(x) a ser testada
-    f = lambda x: 2 * x + 3  # Exemplo de função linear
+    # Definir a função
+    func = (x**2 - 1) / (x - 1)  # Exemplo com forma indeterminada
+        
+    # Simplificar a função simbolicamente (para evitar indeterminações)
+    func = sp.simplify(func)
 
-    # Parâmetros
-    c = 2  # Ponto em que o limite está sendo avaliado
-    L = 7  # Valor do limite esperado
-    epsilon = 0.01
-    delta = 0.01
+    # Ponto de limite, valor esperado e tolerâncias
+    a = 1
+    L = 2
 
-    # Geração de valores de x manualmente
-    x_valores = [c - delta + i * 0.0001 for i in range(int(2 * delta / 0.0001))]
-    x_valores = [x for x in x_valores if x != c]  # Remove o ponto c
-
-    # Verificação da definição formal
-    limite_valido = True
-
-    for x in x_valores:
-        if not (0 < abs(x - c) < delta and abs(f(x) - L) < epsilon):
-            limite_valido = False
-            break
-
-    # Resultado
-    print(f"Para ε = {epsilon} e δ = {delta}, a definição é : {'satisfeita' if limite_valido else 'não satisfeita'}.")
+    # Verificar o limite
+    if verify_limit(func, a, L):
+        print(f"O limite de f(x) quando x tende a {a} é {L}, conforme a definição formal.")
+    else:
+        print(f"O limite de f(x) quando x tende a {a} NÃO é {L} ou a definição formal não foi atendida.")
